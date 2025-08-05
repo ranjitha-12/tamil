@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rbc-header {
+  color: white;
+  font-size: 14px !important;
+  text-align: center;       
+  vertical-align: middle;
+  height: 36px !important;
+  background: #17405d;
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+
+.rbc-time-header-cell .rbc-today {
+  background-color: #04aa6d !important;
+}
+
+.rbc-events-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.rbc-agenda-view table thead > tr > th {
+  background-color: #17405d;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
+
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th {
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    color: black;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.input {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cbd5e1;
+  border-radius: 0.5rem;
+  outline: none;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  background-color: #f9fafb;
+}
