@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 export interface Parent {
+  country: string;
   _id: string;
   username: string;
   email: string;
@@ -15,9 +16,6 @@ export interface Parent {
   fatherFirstName: string;
   fatherLastName: string;
   studentName?: string;
-  address: {
-    country: string;
-  },
 }
 
 const ParentListPage = () => {
@@ -73,7 +71,7 @@ const ParentListPage = () => {
       return {
         _id: parent._id,
         username: parent.username,
-        country: parent.country,
+        country: parent.address?.country || "N/A",
         email: parent.email,
         whatsapp: parent.whatsapp,
         studentName: studentNames,
@@ -97,7 +95,7 @@ const ParentListPage = () => {
         return {
           _id: parent._id,
           username: parent.username,
-          country: parent.country,
+          country: parent.address?.country || "N/A",
           email: parent.email,
           whatsapp: parent.whatsapp,
           studentName: studentNames,
@@ -131,7 +129,7 @@ const ParentListPage = () => {
   const renderRow = (parent: Parent) => (
     <tr key={parent._id} className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100">
       <td className="py-3">{parent.username}</td>
-      <td className="py-3 hidden md:table-cell">{parent.address.country}</td>
+      <td className="py-3 hidden md:table-cell">{parent.country}</td>
       <td className="py-3 hidden md:table-cell">{parent.email}</td>
       <td className="py-3">{parent.whatsapp}</td>
       <td className="py-3 hidden md:table-cell">{parent.studentName}</td>
