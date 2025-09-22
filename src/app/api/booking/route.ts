@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-    if (student.sessionUsed >= student.sessionLimit) {
+    if ((student.sessionUsed ?? 0) >= (student.sessionLimit ?? 1)) {
       return NextResponse.json(
         { error: 'Session limit reached. Upgrade your plan to book more classes.' },
         { status: 403 }
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       end: new Date(end),
       status: 'booked',
     });
-    student.sessionUsed += 1;
+    student.sessionUsed = (student.sessionUsed ?? 0) + 1;
     await student.save();
 
     await Teacher.findByIdAndUpdate(

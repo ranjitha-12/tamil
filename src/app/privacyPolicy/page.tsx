@@ -20,7 +20,7 @@ const PrivacyPolicyPage = () => {
       <section className="flex-grow px-6 py-12 max-w-5xl mx-auto text-gray-800">
         <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
         <p className="mb-6">
-          Welcome to our Tamil Online Classes platform. Your privacy is very important to us. This Privacy Policy explains how we
+          Welcome to our Universal Tamil Academy platform. Your privacy is very important to us. This Privacy Policy explains how we
           collect, use, share, and protect your personal data when you visit or use our website and related services.
         </p>
 
@@ -40,11 +40,10 @@ const PrivacyPolicyPage = () => {
 
         <h2 className="text-xl font-semibold mt-8 mb-2">3. Data We Collect</h2>
         <ul className="list-disc list-inside mb-4 space-y-1">
-          <li>Personal Info: Name, Email, Phone, Address, Gender, DOB, Profile Image, Student Details</li>
+          <li>Personal Info: Name, E-mail ID, Phone, Country, Gender, DOB, Profile Image, Student Details</li>
           <li>Account Info: Username, Password (encrypted)</li>
-          <li>Class Data: Bookings, Subjects, Assignments</li>
           <li>Device Info: IP address, Browser, Device Type, Pages Visited</li>
-          <li>Recordings, feedback, chat data, student content like blogs or videos</li>
+          <li>Payment Info: Card Details, Address, E-mail ID, Transaction ID</li>
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">4. How We Collect Data</h2>
@@ -58,7 +57,7 @@ const PrivacyPolicyPage = () => {
         <ul className="list-disc list-inside mb-4 space-y-1">
           <li>To register and manage accounts</li>
           <li>To schedule classes and track progress</li>
-          <li>To communicate through email, WhatsApp, or SMS</li>
+          <li>To communicate through E-mail, WhatsApp, or SMS</li>
           <li>To improve our services and personalize experiences</li>
           <li>To send updates and notifications</li>
         </ul>
@@ -71,10 +70,10 @@ const PrivacyPolicyPage = () => {
           <li>Legal authorities, if required</li>
         </ul>
 
-        <h2 className="text-xl font-semibold mt-8 mb-2">7. Children’s Privacy</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-2">7. Children Privacy</h2>
         <p className="mb-4">
-          We comply with COPPA and do not collect data from children under 13 without parental consent. Parents may review or delete
-          their child’s data.
+          We comply with COPPA and do not collect data from children under 13 without parental consent. Parents may review
+          their child data.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">8. Security Measures</h2>
@@ -90,10 +89,9 @@ const PrivacyPolicyPage = () => {
           <li>Delete your account</li>
           <li>Withdraw consent</li>
           <li>Request data export</li>
-          <li>Opt-out of marketing</li>
         </ul>
         <p className="mb-4">
-          To exercise your rights, contact us at <strong>support@tamillclasses.com</strong>.
+          To exercise your rights, contact us at <strong>universaltamilacademy@gmail.com</strong>.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">10. Cookies and Tracking</h2>
@@ -109,16 +107,16 @@ const PrivacyPolicyPage = () => {
 
         <h2 className="text-xl font-semibold mt-8 mb-2">12. Copyright</h2>
         <p className="mb-4">
-          All content on this site, including text and images, is owned by Tamil Online Classes and protected by copyright law. Do not
+          All content on this site, including text and images, is owned by Universal Tamil Academy and protected by copyright law. Do not
           copy without permission.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">13. Contact Us</h2>
         <p className="mb-4">
           If you have any questions or requests about this Privacy Policy:
-          <br />📧 Email: support@tamillclasses.com
+          <br />📧 E-mail: universaltamilacademy@gmail.com
           <br />📞 Phone: +91 99999 99999
-          <br />🌐 Website: www.tamillclasses.com
+          <br />🌐 Website: www.universaltamilacademy.com
         </p>
       </section>
 

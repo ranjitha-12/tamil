@@ -27,8 +27,8 @@ export interface Student {
    name: string;
    surname: string;
    email: string;
-   age: number;
    grade: Grade;
+   tamilGrade?: string;
    profileImage?: string;
    sex: 'MALE' | 'FEMALE' | 'OTHER';
    birthday: string;
@@ -40,7 +40,7 @@ const columns = [
   { header: 'Name', accessor: 'name' },
   { header: 'Surname', accessor: 'surname', className: 'hidden md:table-cell' },
   { header: 'Email', accessor: 'email', className: 'hidden md:table-cell' },
-  { header: 'Grade', accessor: 'grade', className: 'hidden lg:table-cell' },
+  { header: 'Tamil Grade', accessor: 'tamilGrade', className: 'hidden lg:table-cell' },
   { header: 'Actions', accessor: 'action' },
 ];
 
@@ -65,8 +65,6 @@ const StudentList = () => {
 
   if (userRole === 'Admin') {
     fetchAllStudents();
-  } else if (userRole === 'Parent' && id) {
-    fetchStudentsByParent();
   } else if (userRole === 'Teacher' && id) {
     fetchStudentsByTeacher();
   }
@@ -76,8 +74,6 @@ const refreshStudents = () => {
   if (!userRole) return;
   if (userRole === 'Admin') {
     fetchAllStudents();
-  } else if (userRole === 'Parent' && id) {
-    fetchStudentsByParent();
   } else if (userRole === 'Teacher' && id) {
     fetchStudentsByTeacher();
   }
@@ -93,16 +89,6 @@ const fetchAllStudents = async () => {
     setStudents(data);
   } catch (err) {
     console.error('Failed to fetch all students:', err);
-  }
-};
-
-const fetchStudentsByParent = async () => {
-  try {
-    const res = await fetch(`/api/student/fetchStudentsByParent?parentId=${id}`);
-    const data = await res.json();
-    setStudents(data.students || []);
-  } catch (err) {
-    console.error('Failed to fetch students by parent:', err);
   }
 };
 
@@ -140,7 +126,7 @@ const fetchStudentsByTeacher = async () => {
   };
 
   const renderRow = (student: Student) => (
-    <tr key={student._id} className="text-left text-gray-700 text-sm even:bg-slate-50 hover:bg-purple-100">
+    <tr key={student._id} className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100">
       <td className="flex items-center gap-2 py-3">
         <Image src={student.profileImage || '/noimage.png'} alt=""
           width={35} height={35} className="xl:block w-10 h-10 rounded-full object-cover"/>
@@ -148,7 +134,7 @@ const fetchStudentsByTeacher = async () => {
       </td>
       <td className="py-3 hidden md:table-cell">{student.surname}</td>
       <td className="py-3 hidden md:table-cell">{student.email}</td>
-      <td className="py-3 hidden lg:table-cell"> {student.grade && typeof student.grade === 'object' ? student.grade.name : ''}</td>
+      <td className="py-3 hidden lg:table-cell"> {student.tamilGrade || "Not Assigned"}</td>
       <td className="py-3 whitespace-nowrap">
         <div className="flex flex-wrap md:flex-nowrap items-center gap-2">
         {(userRole === 'Admin' || userRole === 'Parent' || userRole === 'Teacher') && (
@@ -168,7 +154,7 @@ const fetchStudentsByTeacher = async () => {
   return (
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-md sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">All Students</h1>
+        <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">All Students</h1>
           {(userRole === 'Parent' || userRole === 'Admin') && (
           <div className="flex items-center gap-4">
           <button onClick={handleOpen} className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-400">

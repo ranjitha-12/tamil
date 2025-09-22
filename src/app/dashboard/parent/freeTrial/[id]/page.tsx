@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Modal from '@/components/FormModal';
-import StudentForm from '@/components/forms/studentForm';
 
 interface Student {
   _id: string;
@@ -17,7 +15,6 @@ const FreeTrialPage = () => {
   const [used, setUsed] = useState<boolean | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<string>('');
-  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     if (!parentId) return;
@@ -68,16 +65,20 @@ const FreeTrialPage = () => {
     }
   };
 
+   const handleOpen = () => {
+    router.push('/dashboard/list/children/addChildren');
+  };
+
  const renderStudentSection = () => {
   if (students.length === 0 && used !== null) {
     return (
       <>
-        <p className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">You have no students. Please add one to proceed.</p>
+        <p className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">You have no children. Please add one to proceed.</p>
         <button
-          onClick={() => setShowForm(true)}
+          onClick={handleOpen}
           className="px-4 py-2 bg-blue-500 hover:bg-bl-600 text-white rounded-md mt-4"
         >
-          + Add Student
+          + Add Child
         </button>
       </>
     );
@@ -113,10 +114,9 @@ const FreeTrialPage = () => {
 
   return (
     <div>
-    <div className="relative h-64 bg-[url('/parentDashboard.png')] bg-cover bg-center flex items-center justify-center">
-        <div className="bg-black/50 w-full h-full absolute inset-0" />
-        <h1 className="relative z-10 text-white text-3xl sm:text-4xl font-bold">Parent Dashboard</h1>
-      </div>
+      <section className="bg-gray-300 text-black py-10 px-6 text-center">
+        <h1 className="text-4xl font-bold mb-4">Parent Dashboard</h1>
+      </section>
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-6 mt-4">
       <h1 className="text-md sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-bold mb-4">Book Your Free Trial Class</h1>
 
@@ -130,21 +130,6 @@ const FreeTrialPage = () => {
       {/* Render student section via function */}
       {renderStudentSection()}
 
-      {/* Add Student Modal */}
-      <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
-        <StudentForm
-          onClose={() => {
-            setShowForm(false);
-            fetch(`/api/student/fetchStudentsByParent?parentId=${parentId}`)
-              .then((res) => res.json())
-              .then((data) => {
-                setStudents(data.students || []);
-              })
-              .catch(console.error);
-          }}
-          refreshStudents={() => {}}
-        />
-      </Modal>
     </div>
     </div>
   );

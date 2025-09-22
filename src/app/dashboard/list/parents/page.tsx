@@ -14,8 +14,10 @@ export interface Parent {
   motherLastName: string;
   fatherFirstName: string;
   fatherLastName: string;
-  country: string;
   studentName?: string;
+  address: {
+    country: string;
+  },
 }
 
 const ParentListPage = () => {
@@ -127,9 +129,9 @@ const ParentListPage = () => {
   };
 
   const renderRow = (parent: Parent) => (
-    <tr key={parent._id} className="text-left text-gray-700 text-sm even:bg-slate-50 hover:bg-purple-100">
+    <tr key={parent._id} className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100">
       <td className="py-3">{parent.username}</td>
-      <td className="py-3 hidden md:table-cell">{parent.country}</td>
+      <td className="py-3 hidden md:table-cell">{parent.address.country}</td>
       <td className="py-3 hidden md:table-cell">{parent.email}</td>
       <td className="py-3">{parent.whatsapp}</td>
       <td className="py-3 hidden md:table-cell">{parent.studentName}</td>
@@ -148,7 +150,7 @@ const ParentListPage = () => {
   return (
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">
         <div className="flex items-center justify-between mb-6">
-            <h1 className="text-md sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Parent List</h1>
+            <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Parent List</h1>
         </div>
       <div>
             <Table columns={columns} renderRow={renderRow} data={paginatedParents} />

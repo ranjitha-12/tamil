@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectMongoDB } from '@/lib/mongodb';
-import Parent from '@/models/parent';
+import '@/models/parent';
 import Student from '@/models/studentModel';
 
 export async function GET(req: NextRequest) {
@@ -20,13 +20,18 @@ export async function GET(req: NextRequest) {
     // Collect unique parents
     const uniqueParentsMap = new Map();
     students.forEach(student => {
-      if (student.parent && !uniqueParentsMap.has(student.parent._id.toString())) {
-        const parentData = student.parent.toObject();
-        parentData.student = [student]; // initialize
-        uniqueParentsMap.set(parentData._id.toString(), parentData);
-      } else if (student.parent) {
-        uniqueParentsMap.get(student.parent._id.toString()).student.push(student);
-      }
+      if (student.parent && typeof (student.parent as any).toObject === 'function') {
+  const parentDoc = student.parent as any;
+  const parentId = parentDoc._id.toString();
+
+  if (!uniqueParentsMap.has(parentId)) {
+    const parentData = parentDoc.toObject();
+    parentData.student = [student];
+    uniqueParentsMap.set(parentId, parentData);
+  } else {
+    uniqueParentsMap.get(parentId).student.push(student);
+  }
+}
     });
 
     const parents = Array.from(uniqueParentsMap.values());

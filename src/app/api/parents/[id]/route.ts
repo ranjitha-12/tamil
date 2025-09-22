@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectMongoDB } from '@/lib/mongodb';
 import Parent, { ParentInterface } from '@/models/parent';
 import Student from '@/models/studentModel';
+import '@/models/classModel'; 
 
 export async function GET(
   _req: NextRequest,

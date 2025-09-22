@@ -8,32 +8,21 @@ import Modal from '@/components/FormModal';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 
-interface Slot {
-  date: string;
-  localTime: string;
-  utcTime: string;
-}
-interface Assignment {
-  classes: string;
-  subjects: string;
-  slots: Slot[];
-}
 interface Teacher {
   _id: string;
-  username: string;
   name: string;
   surname: string;
-  email?: string;
+  email: string;
+  resume?: string;
   profileImage?: string;
   phone?: string;
+  additionalPhone?: string;
   address: string;
   bloodType: string;
   sex: string;
   birthday: string;
   password: string;
-  assignments: Assignment[];
   subjects: { _id: string; name: string }[];
-  classes: { _id: string; name: string }[];
 }
 
 const columns = [
@@ -41,19 +30,19 @@ const columns = [
     header: "Name",
     accessor: "name",
   },
-  {
-    header: "Subjects",
-    accessor: "subjects",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Classes",
-    accessor: "classes",
-    className: "hidden md:table-cell",
-  },
+  // {
+  //   header: "Subjects",
+  //   accessor: "subjects",
+  //   className: "hidden md:table-cell",
+  // },
   {
     header: "Phone",
     accessor: "phone",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "E-mail ID",
+    accessor: "email",
     className: "hidden lg:table-cell",
   },
   {
@@ -135,15 +124,15 @@ useEffect(() => {
 };
 
   const renderRow = (teacher: Teacher) => (
-    <tr key={teacher._id} className="text-left text-gray-500 text-sm even:bg-slate-50 hover:bg-purple-100 mr-2">
+    <tr key={teacher._id} className="text-left text-gray-500 text-md even:bg-slate-50 hover:bg-purple-100 mr-2">
       <td className="flex items-center gap-2 py-3">
         <Image src={teacher.profileImage || '/noimage.png'} alt=""
           width={35} height={35} className="xl:block w-10 h-10 rounded-full object-cover"/>
         <h3 className="font-semibold">{teacher.name}</h3>
       </td>
-      <td className="py-3 hidden md:table-cell">{teacher.subjects.map(s => s.name).join(", ")}</td>
-      <td className="py-3 hidden md:table-cell">{teacher.classes.map(c => c.name).join(", ")}</td>
+      {/* <td className="py-3 hidden md:table-cell">{teacher.subjects.map(s => s.name).join(", ")}</td> */}
       <td className="py-3 hidden lg:table-cell">{teacher.phone}</td>
+      <td className="py-3 hidden lg:table-cell">{teacher.email}</td>
       <td className="py-3 hidden lg:table-cell">{teacher.address}</td>
       <td className="py-3 whitespace-nowrap">
         <div className="flex flex-wrap md:flex-nowrap items-center gap-2">
@@ -170,7 +159,7 @@ useEffect(() => {
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">
       {/* TOP */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-md sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">All Teachers</h1>  
+        <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">All Teachers</h1>  
            {userRole === "Admin" && (
           <div className="flex items-center gap-4">
             <button

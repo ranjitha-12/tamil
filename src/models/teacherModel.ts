@@ -4,11 +4,12 @@ import { isValidPhoneNumber } from 'libphonenumber-js';
 export type UserSex = "MALE" | "FEMALE" | "OTHER";
 
 export interface TeacherInterface extends mongoose.Document {
-  username: string;
   name: string;
   surname: string;
   email: string;
+  resume?: string;
   phone: string;
+  additionalPhone: string;
   address: string;
   profileImage?: string;
   bloodType: string;
@@ -18,25 +19,14 @@ export interface TeacherInterface extends mongoose.Document {
   password: string;
   role: "Teacher";
   subjects: mongoose.Types.ObjectId[];
-  classes: mongoose.Types.ObjectId[];
-  assignments: {
-    classes: string;
-    subjects: string;
-    slots: {
-      date: string;                
-      localTime: string;    
-      utcTime: string;      
-    }[];
-  }[];
   students: mongoose.Types.ObjectId[];
-  attendanceCount?: number;
 }
 
 const teacherSchema = new mongoose.Schema<TeacherInterface>({
-  username: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   surname: { type: String, required: true },
   email: { type: String, unique: true, sparse: true },
+  resume: { type: String },
   phone: {
     type: String,
     unique: true,
@@ -48,6 +38,7 @@ const teacherSchema = new mongoose.Schema<TeacherInterface>({
       message: (props: any) => `${props.value} is not a valid phone number!`,
     },
   },
+  additionalPhone: { type: String },
   address: { type: String, required: true },
   profileImage: { type: String },
   bloodType: { type: String, required: true },
@@ -57,22 +48,7 @@ const teacherSchema = new mongoose.Schema<TeacherInterface>({
   password: { type: String, required: true },
   role: { type: String, enum: ["Teacher"], required: true },
   subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
-  classes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Class" }],
-  assignments: [
-    {
-      classes: { type: String, required: true },
-      subjects: { type: String, required: true },
-      slots: [
-        {
-          date: { type: String, required: true },
-          localTime: { type: String, required: true },
-          utcTime: { type: String, required: true },
-        },
-      ],
-    },
-  ],
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
-  attendanceCount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const Teacher = mongoose.models.Teacher || mongoose.model<TeacherInterface>("Teacher", teacherSchema);

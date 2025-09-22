@@ -3,10 +3,12 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +26,7 @@ export default function ForgotPasswordPage() {
       } else {
         toast.error(data.error);
       }
+      router.push('/login');
     } catch (err) {
       toast.error('Something went wrong');
     } finally {
@@ -46,11 +49,11 @@ export default function ForgotPasswordPage() {
       {/* Right Form Section */}
       <div className="w-full md:w-[30%] flex items-center justify-center px-8 py-12">
         <form onSubmit={handleSubmit} className="w-full space-y-6">
-          <div className="flex flex-col space-y-2">
+          <div className="font-bold text-neutral-800 flex flex-col space-y-2">
             <Link href="/login">
-              <h3 className="text-black font-bold text-[28px]">FORGOT PASSWORD</h3>
+              <h3 className="text-black font-bold text-3xl">FORGOT PASSWORD</h3>
             </Link>
-            <p className="text-sm text-neutral-800">
+            <p className="text-md text-neutral-400">
               Reset your password by email
             </p>
           </div>
@@ -62,23 +65,23 @@ export default function ForgotPasswordPage() {
             <input
               type="email"
               name="email"
-              placeholder="abc@gmail.com"
+              placeholder="User Name (abc@gmail.com)"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:bg-gray-50 sm:text-sm"
+              className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:bg-gray-50 text-md"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 text-white bg-[#f55418] hover:bg-transparent border border-[#f55418] rounded-md hover:text-[#f55418] transition"
+            className="w-full py-3 text-white font-semibold text-md bg-[#f55418] hover:bg-transparent border border-[#f55418] rounded-md hover:text-[#f55418] transition"
             disabled={loading}
           >
             {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
 
-          <div className="text-sm text-neutral-800 text-center">
+          <div className="text-center text-md font-medium text-neutral-800">
             <Link href="/login" className="text-[#1565C0] hover:underline">
               Back to Login
             </Link>

@@ -133,7 +133,7 @@ const ParentAttendancePage = () => {
   };
 
   if (loading) return <div className="p-4">Loading Attendance...</div>;
-  if (!students.length) return <div className="p-4">No students found.</div>;
+  if (!students.length) return <div className="p-4">No children's found.</div>;
 
   return (
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-4">
@@ -173,14 +173,14 @@ const ParentAttendancePage = () => {
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center items-center gap-2 mb-8 mt-8">
-        <label htmlFor="studentSelect" className="mr-2 font-medium">Select Student:</label>
+        <label htmlFor="studentSelect" className="mr-2 font-semibold">Children's:</label>
         <select
           id="studentSelect"
           className="border rounded min-w-[200px] sm:min-w-[250px] md:min-w-[300px] px-2 py-1 w-full sm:w-auto"
           value={selectedStudent}
           onChange={(e) => setSelectedStudent(e.target.value)}
         >
-          <option value="">-- select --</option>
+          <option value="">-- Select Children --</option>
           {students.map((stud) => (
             <option key={stud._id} value={stud._id}>
               {stud.name} {stud.surname} ({stud.grade?.name})

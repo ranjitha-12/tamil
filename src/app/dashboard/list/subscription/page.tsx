@@ -80,7 +80,7 @@ const SubscriptionSinglePage = () => {
   };
 
   const renderRow = (sub: Subscription) => (
-    <tr key={sub._id} className="text-left text-gray-500 text-sm even:bg-slate-50 hover:bg-purple-100">
+    <tr key={sub._id} className="text-left text-gray-500 text-md even:bg-slate-50 hover:bg-purple-100">
       <td className="py-3 px-3">{sub.name}</td>
       <td className="py-3 px-3">{sub.price}</td>
       <td className="py-3 px-3 hidden md:table-cell">{sub.value}</td>
@@ -101,7 +101,7 @@ const SubscriptionSinglePage = () => {
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-4">
       {/* TOP BAR */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-md sm:text-md md:text-xl lg:text-xl 2xl:text-xl font-semibold">All Subscriptions</h1>
+        <h1 className="text-xl sm:text-md md:text-xl lg:text-xl 2xl:text-xl font-semibold">All Subscriptions</h1>
         <div className="flex items-center gap-4">
           <button onClick={handleOpen} className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-400">
             <Image src="/create.png" alt="Create" width={14} height={14} />

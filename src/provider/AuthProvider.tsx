@@ -4,8 +4,16 @@ import { ReactNode } from "react";
 
 interface AuthProviderProps {
   children: ReactNode;
+  session?: any;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  return <SessionProvider>{children}</SessionProvider>;
+export const AuthProvider = ({ children, session }: AuthProviderProps) => {
+  return (
+    <SessionProvider 
+      session={session}
+      refetchOnWindowFocus={false}
+    >
+      {children}
+    </SessionProvider>
+  );
 };

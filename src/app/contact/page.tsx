@@ -61,18 +61,18 @@ const ContactPage = () => {
           <div>
             <h2 className="text-2xl font-semibold mb-4 text-purple-700">Get in Touch</h2>
             <p className="mb-4">
-              Whether you’re a parent, student, or just curious about Tamil Online Classes, we’re just a message away.
+              Whether you’re a parent, student, teacher or just curious about Tamil Online Classes, we’re just a message away.
             </p>
             <ul className="space-y-2">
               <li>📧 <strong>Email:</strong>{' '}
                 <a href="" className="text-blue-600 underline">
-                  support@tamillclasses.com
+                  universaltamilacademy@gmail.com
                 </a>
               </li>
               <li>📞 <strong>Phone:</strong> +91 99999 99999</li>
               <li>🌐 <strong>Website:</strong>{' '}
                 <a href="" className="text-blue-600 underline">
-                  www.tamillclasses.com
+                  www.universaltamilacademy.com
                 </a>
               </li>
               <li>🕐 <strong>Working Days:</strong> All Seven Days 24/7</li>

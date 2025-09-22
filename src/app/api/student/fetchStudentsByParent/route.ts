@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Parent ID is required" }, { status: 400 });
     }
 
-    const students = await Student.find({ parent: parentId }).populate("grade", "name").populate("parent").lean();
+    const students = await Student.find({ parent: parentId }).populate("grade", "name").lean();
 
     return NextResponse.json({ students }, { status: 200 });
   } catch (error) {

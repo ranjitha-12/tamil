@@ -90,7 +90,7 @@ const FreeTrialList = () => {
     return (
       <tr
         key={trial._id}
-        className="text-left text-gray-700 text-sm even:bg-slate-50 hover:bg-purple-100"
+        className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100"
       >
         <td className="py-3">{trial.student.name}</td>
         <td className="py-3 hidden md:table-cell">{trial.student.surname}</td>
@@ -109,7 +109,7 @@ const FreeTrialList = () => {
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="p-2 border border-gray-300 rounded-md text-sm"
+            className="p-2 border border-gray-300 rounded-md text-md"
           >
             <option value="">Select Month</option>
             {months.map((month) => (
@@ -122,7 +122,7 @@ const FreeTrialList = () => {
           <select
             value={selectedYear}
             onChange={handleYearChange}
-            className="p-2 border border-gray-300 rounded-md text-sm"
+            className="p-2 border border-gray-300 rounded-md text-md"
           >
             <option value="">Select Year</option>
             {years.map((year) => (

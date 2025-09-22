@@ -89,7 +89,7 @@ const FreeTrialList = () => {
     return (
       <tr
         key={trial._id}
-        className="text-left text-gray-700 text-sm even:bg-slate-50 hover:bg-purple-100"
+        className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100"
       >
         <td className="py-3">{trial.student.name}</td>
         <td className="py-3 hidden md:table-cell">{trial.student.surname}</td>
@@ -103,12 +103,12 @@ const FreeTrialList = () => {
   return (
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-1 sm:p-2 md:p-3 lg:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-md sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Free Trial Classes List</h1>
+        <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Free Trial Classes List</h1>
         <div className="flex gap-2">
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="p-2 border border-gray-300 rounded-md text-sm"
+            className="p-2 border border-gray-300 rounded-md text-md"
           >
             <option value="">Select Month</option>
             {months.map((month) => (
@@ -121,7 +121,7 @@ const FreeTrialList = () => {
           <select
             value={selectedYear}
             onChange={handleYearChange}
-            className="p-2 border border-gray-300 rounded-md text-sm"
+            className="p-2 border border-gray-300 rounded-md text-md"
           >
             <option value="">Select Year</option>
             {years.map((year) => (

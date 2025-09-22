@@ -68,7 +68,7 @@ export default function FeedbackPage() {
       .then((res) => res.json())
       .then((data) => setStudents(data.students || []));
 
-    fetch(`/api/teacher/byParent?parentId=${parentId}`)
+    fetch('/api/teacher')
       .then((res) => res.json())
       .then((data) => setTeachers(data.teachers || []));
 
@@ -108,6 +108,7 @@ export default function FeedbackPage() {
         });
         setSelectedStudent('');
         setSelectedTeacher('');
+        if (parentId) { fetchFeedbacks(parentId); }
       } else {
         toast.error('Failed to submit: ' + (json.error || 'Unknown error'));
       }
@@ -131,10 +132,10 @@ export default function FeedbackPage() {
         <select
           value={selectedStudent}
           onChange={(e) => setSelectedStudent(e.target.value)}
-          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm mb-5"
+          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-md mb-5"
           required
         >
-          <option value="">Select Student</option>
+          <option value="">Select Children</option>
           {students.map((s) => (
             <option key={s._id} value={s.name}>{s.name}</option>
           ))}
@@ -143,7 +144,7 @@ export default function FeedbackPage() {
         <select
           value={selectedTeacher}
           onChange={(e) => setSelectedTeacher(e.target.value)}
-          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm mb-5"
+          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-md mb-5"
           required
         >
           <option value="">Select Teacher</option>
@@ -158,7 +159,7 @@ export default function FeedbackPage() {
           placeholder="Discussion Summary"
           value={formData.discussionSummary}
           onChange={(e) => setFormData({ ...formData, discussionSummary: e.target.value })}
-          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm mb-5"
+          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-md mb-5"
           required
         />
 
@@ -166,7 +167,7 @@ export default function FeedbackPage() {
           placeholder="Feedback"
           value={formData.feedbackText}
           onChange={(e) => setFormData({ ...formData, feedbackText: e.target.value })}
-          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm mb-5"
+          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-md mb-5"
           required
         />
 
@@ -174,17 +175,17 @@ export default function FeedbackPage() {
           placeholder="Suggestions (optional)"
           value={formData.suggestions}
           onChange={(e) => setFormData({ ...formData, suggestions: e.target.value })}
-          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm mb-5"
+          className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-md mb-5"
         />
 
         <div className="flex items-center space-x-2 mb-5">
-          <span className="text-sm font-medium">Rating:</span>
+          <span className="text-md font-medium">Rating:</span>
           {renderStars(formData.rating).map((star, i) => (
             <span key={i} onClick={() => setFormData({ ...formData, rating: i + 1 })} className="cursor-pointer">
               {star}
             </span>
           ))}
-          <span className="text-sm text-gray-500 ml-2">({formData.rating})</span>
+          <span className="text-md text-gray-500 ml-2">({formData.rating})</span>
         </div>
 
         <button disabled={submitting} type="submit" className="bg-blue-500 hover:bg-blue-600 float-end text-white py-2 px-6 rounded-md">
@@ -192,7 +193,7 @@ export default function FeedbackPage() {
         </button>
       </form>
 
-      <h2 className="text-md sm:text-lg font-semibold mb-4">📋 Your Feedbacks</h2>
+      <h2 className="text-lg sm:text-lg font-semibold mb-4">📋 Your Feedbacks</h2>
       {feedbacks.length === 0 ? (
         <p className="text-gray-500">No feedback submitted yet.</p>
       ) : (

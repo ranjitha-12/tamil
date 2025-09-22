@@ -11,9 +11,9 @@ const Table = ({
 }) => {
   return (
     <div className="overflow-x-auto mt-5">
-    <table className="w-full text-md text-center text-gray-700">
+    <table className="w-full text-center text-gray-700">
       <thead className="mt-2">
-        <tr className="text-left text-gray-500 text-md bg-gray-50">
+        <tr className="text-left text-gray-500 text-lg bg-gray-50">
           {columns.map((col) => (
             <th key={col.accessor} className={col.className}>{col.header}</th>
           ))}

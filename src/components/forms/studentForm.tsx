@@ -21,8 +21,8 @@ export interface StudentData {
   name: string;
   surname: string;
   email: string;
-  age: number;
   grade: Grade;
+  tamilGrade?: string;
   profileImage?: string;
   sex: 'MALE' | 'FEMALE' | 'OTHER';
   birthday: string;
@@ -40,7 +40,6 @@ const StudentForm = ({ existingStudent, onClose, refreshStudents }: Props) => {
   const { data: session } = useSession();
   const userRole = session?.user?.role;
   const parentId = session?.user?.id;
-
   const [parents, setParents] = useState<Parent[]>([]);
   const [selectedParentId, setSelectedParentId] = useState<string>("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -78,11 +77,8 @@ useEffect(() => {
 
   useEffect(() => {
     if (!userRole) return;
-
     if (userRole === 'Admin' || userRole === 'Teacher') {
       fetchAllParents();
-    } else if (userRole === 'Parent' && parentId) {
-      fetchParentById(parentId);
     }
   }, [userRole, parentId]);
 
@@ -118,16 +114,6 @@ useEffect(() => {
     console.error('Failed to fetch all parents:', err);
   }
 };
-
-  const fetchParentById = async (id: string) => {
-    try {
-      const res = await fetch(`/api/parents/${id}`);
-      const data = await res.json();
-      setParents([data]); 
-    } catch (err) {
-      console.error('Failed to fetch parent by ID:', err);
-    }
-  };
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -171,25 +157,23 @@ useEffect(() => {
       <span className="text-xs text-gray-400 font-medium uppercase mb-4">Personal Information</span>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input required name="name" defaultValue={existingStudent?.name} placeholder="First Name" className="border p-2 rounded" />
-        <input required name="surname" defaultValue={existingStudent?.surname} placeholder="Surname" className="border p-2 rounded" />
-        <input name="email" defaultValue={existingStudent?.email} placeholder="Email" className="border p-2 rounded" />
-        <input name="age" type="number" defaultValue={existingStudent?.age || ''} placeholder="Age" className="border p-2 rounded" />
-        <select required name="grade" value={selectedGradeId}
-            onChange={(e) => setSelectedGradeId(e.target.value)} className="border p-2 rounded" >
-          <option value="">Select Grade</option>
-          {classes.map((cls) => (
-            <option key={cls._id} value={cls._id}>{cls.name}</option>
-          ))}
-        </select>
-        <input required type="date" name="birthday" defaultValue={formatDate(existingStudent?.birthday)} className="border p-2 rounded" />
+        <input required name="name" defaultValue={existingStudent?.name} placeholder="Student First Name" className="border p-2 rounded" />
+        <input required name="surname" defaultValue={existingStudent?.surname} placeholder="Student Last Name" className="border p-2 rounded" />
         <select required name="sex" defaultValue={existingStudent?.sex || ''} className="border p-2 rounded">
           <option value="">Select Gender</option>
           <option value="MALE">Male</option>
           <option value="FEMALE">Female</option>
           <option value="OTHER">Other</option>
         </select>
-
+        <input required type="date" name="birthday" defaultValue={formatDate(existingStudent?.birthday)} className="border p-2 rounded" />
+        <select required name="grade" value={selectedGradeId}
+            onChange={(e) => setSelectedGradeId(e.target.value)} className="border p-2 rounded" >
+          <option value="">Select Academic Grade</option>
+          {classes.map((cls) => (
+            <option key={cls._id} value={cls._id}>{cls.name}</option>
+          ))}
+        </select>
+        <input required name="email" defaultValue={existingStudent?.email} placeholder="Email" className="border p-2 rounded" />
         <select
           required
           name="parent"

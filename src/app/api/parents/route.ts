@@ -14,6 +14,104 @@ function getCloudinaryPublicId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+// UPDATE a parent
+export async function PUT(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'Missing parent ID' }, { status: 400 });
+
+  try {
+    await connectMongoDB();
+    const formData = await req.formData();
+    const file = formData.get('profileImage') as File;
+
+    const existingParent = await Parent.findById(id);
+    if (!existingParent) return NextResponse.json({ error: 'Parent not found' }, { status: 404 });
+    
+    const updates: any = {};
+    const address: any = {};
+    
+    // Process all form data fields
+    for (const [key, value] of formData.entries()) {
+      if (key === "profileImage") continue;
+
+      // Handle address fields with bracket notation (address[street], address[city], etc.)
+      if (key.startsWith("address[")) {
+        const addrKey = key.match(/address\[(.*?)\]/)?.[1];
+        if (addrKey) {
+          address[addrKey] = value.toString();
+        }
+      } 
+      // Handle address fields with dot notation (address.street, address.city, etc.)
+      else if (key.startsWith("address.")) {
+        const addrKey = key.split('.')[1];
+        address[addrKey] = value.toString();
+      }
+      else {
+        updates[key] = value.toString();
+      }
+    }
+    
+    // Only add address to updates if we have address data
+    if (Object.keys(address).length > 0) {
+      // FIX: Handle case where existingParent.address might be undefined
+      updates.address = existingParent.address 
+        ? { ...existingParent.address.toObject(), ...address }
+        : address;
+    }
+
+    // Handle profile image upload
+    if (file && file.name && file.size > 0) {
+      if (existingParent.profileImage) {
+        const publicId = getCloudinaryPublicId(existingParent.profileImage);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(`parent_profiles/${publicId}`);
+          } catch (error) {
+            console.error('Error deleting old image:', error);
+          }
+        }
+      }
+      
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const tempPath = path.join(os.tmpdir(), file.name);
+      await writeFile(tempPath, buffer);
+      
+      try {
+        const result = await cloudinary.uploader.upload(tempPath, {
+          folder: 'parent_profiles',
+        });
+        updates.profileImage = result.secure_url;
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+      } finally {
+        try {
+          fs.unlinkSync(tempPath);
+        } catch (error) {
+          console.error('Error deleting temp file:', error);
+        }
+      }
+    }
+
+    console.log('Updates to be applied:', updates); // Debug log
+
+    const updatedParent = await Parent.findByIdAndUpdate(
+      id, 
+      updates, 
+      { new: true, runValidators: true }
+    );
+    
+    return NextResponse.json(updatedParent);
+  } catch (error) {
+    console.error('Update error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to update parent',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
@@ -28,48 +126,6 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error fetching parents and students:', error);
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
-  }
-}
-
-// UPDATE a parent
-export async function PUT(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'Missing parent ID' }, { status: 400 });
-
-  try {
-    await connectMongoDB();
-    const formData = await req.formData();
-    const file = formData.get('profileImage') as File;
-
-    const existingParent = await Parent.findById(id);
-    if (!existingParent) return NextResponse.json({ error: 'Parent not found' }, { status: 404 });
-    const updates: any = {};
-    for (const [key, value] of formData.entries()) {
-      if (key !== "profileImage") {
-        updates[key] = value;
-      }
-    }
-    if (file && file.name) {
-      if (existingParent.profileImage) {
-        const publicId = getCloudinaryPublicId(existingParent.profileImage);
-        if (publicId) await cloudinary.uploader.destroy(`parent_profiles/${publicId}`);
-      }
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const tempPath = path.join(os.tmpdir(), file.name);
-      await writeFile(tempPath, buffer);
-      const result = await cloudinary.uploader.upload(tempPath, {
-        folder: 'parent_profiles',
-      });
-      updates.profileImage = result.secure_url;
-      fs.unlinkSync(tempPath);
-    }
-
-    const updatedParent = await Parent.findByIdAndUpdate(id, updates, { new: true });
-    return NextResponse.json(updatedParent);
-  } catch (error) {
-    console.error('Update error:', error);
-    return NextResponse.json({ error: 'Failed to update parent' }, { status: 500 });
   }
 }
 

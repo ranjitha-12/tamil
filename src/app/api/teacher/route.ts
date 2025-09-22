@@ -2,26 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectMongoDB } from "@/lib/mongodb";
 import Teacher from "@/models/teacherModel";
-import ClassModel from "@/models/classModel";
-import SubjectModel from "@/models/subjectModel";
 import cloudinary from "@/lib/cloudinary";
 import { writeFile } from "fs/promises";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import moment from "moment-timezone";
-
-// Helper to get UTC time range from local slot
-function convertToUtcSlot(slot: any, date: string, timezone: string) {
-  const [startStr, endStr] = slot.localTime.split("-");
-  const start = moment.tz(`${date} ${startStr}`, "YYYY-MM-DD hh:mmA", timezone);
-  const end = moment.tz(`${date} ${endStr}`, "YYYY-MM-DD hh:mmA", timezone);
-  return {
-    date,
-    localTime: slot.localTime,
-    utcTime: `${start.utc().toISOString()}-${end.utc().toISOString()}`,
-  };
-}
 
 function getCloudinaryPublicId(url: string): string | null {
   const match = url.match(/\/v\d+\/(.+)\.\w+$/);
@@ -32,11 +17,10 @@ export async function POST(req: NextRequest) {
   try {
     await connectMongoDB();
     const formData = await req.formData();
-
-    const file = formData.get("profileImage") as File | null;
-    const timezone = formData.get("timezone")?.toString() || "Asia/Kolkata";
-    const rawAssignments = JSON.parse(formData.get("assignments") as string);
     const rest = Object.fromEntries(formData.entries());
+
+    const profileFile = formData.get("profileImage") as File | null;
+    const resumeFile = formData.get("resume") as File | null;
 
     const password = rest.password?.toString();
     if (!password) {
@@ -45,44 +29,39 @@ export async function POST(req: NextRequest) {
     delete rest.password;
 
     let imageUrl = "";
-    if (file && file.name) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const tempPath = path.join(os.tmpdir(), file.name);
-      await writeFile(tempPath, buffer);
+    if (profileFile && profileFile.name) {
+      const bytes = Buffer.from(await profileFile.arrayBuffer());
+      const tempPath = path.join(os.tmpdir(), profileFile.name);
+      await writeFile(tempPath, bytes);
       const result = await cloudinary.uploader.upload(tempPath, { folder: "teacher_profiles" });
       imageUrl = result.secure_url;
       fs.unlinkSync(tempPath);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const classNames = rawAssignments.map((a: any) => a.classes);
-    const subjectNames = rawAssignments.map((a: any) => a.subjects);
-    const classDocs = await ClassModel.find({ name: { $in: classNames } });
-    const subjectDocs = await SubjectModel.find({ name: { $in: subjectNames } });
+    let resumeUrl = "";
+    if (resumeFile && resumeFile.name) {
+      const bytes = Buffer.from(await resumeFile.arrayBuffer());
+      const tempPath = path.join(os.tmpdir(), resumeFile.name);
+      await writeFile(tempPath, bytes);
+      const result = await cloudinary.uploader.upload(tempPath, {
+        folder: "teacher_resumes",
+        resource_type: "raw", 
+      });
+      resumeUrl = result.secure_url;
+      fs.unlinkSync(tempPath);
+    }
 
-    const assignments = rawAssignments.flatMap((a: any) => {
-      return a.slots.map((s: any) => ({
-        classes: a.classes,
-        subjects: a.subjects,
-        slots: [convertToUtcSlot(s, s.date, timezone)],
-      }));
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const createdTeacher = await Teacher.create({
       ...rest,
       password: hashedPassword,
       profileImage: imageUrl,
+      resume: resumeUrl, 
       role: "Teacher",
-      assignments,
-      classes: classDocs.map((c) => c._id),
-      subjects: subjectDocs.map((s) => s._id),
     });
 
-    const populated = await Teacher.findById(createdTeacher._id)
-      .select("-password")
-      .populate("classes", "name")
-      .populate("subjects", "name");
+    const populated = await Teacher.findById(createdTeacher._id).select("-password");
 
     return NextResponse.json({ msg: "Teacher created", teacher: populated }, { status: 201 });
   } catch (err) {
@@ -98,25 +77,25 @@ export async function PUT(req: NextRequest) {
     if (!id) return NextResponse.json({ msg: "Teacher ID missing" }, { status: 400 });
 
     const formData = await req.formData();
-    const file = formData.get("profileImage") as File | null;
+    const profileFile = formData.get("profileImage") as File | null;
+    const resumeFile = formData.get("resume") as File | null;
     const removeImage = formData.get("removeImage") === "true";
-    const timezone = formData.get("timezone")?.toString() || "Asia/Kolkata";
-    const rawAssignments = JSON.parse(formData.get("assignments") as string);
+    const removeResume = formData.get("removeResume") === "true";
     const rest = Object.fromEntries(formData.entries());
 
     const teacher = await Teacher.findById(id);
     if (!teacher) return NextResponse.json({ msg: "Teacher not found" }, { status: 404 });
 
+    // Handle Profile Image
     let imageUrl = teacher.profileImage;
-    if (file && file.name) {
+    if (profileFile && profileFile.name) {
       if (imageUrl) {
         const publicId = getCloudinaryPublicId(imageUrl);
         if (publicId) await cloudinary.uploader.destroy(`teacher_profiles/${publicId}`);
       }
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const tempPath = path.join(os.tmpdir(), file.name);
-      await writeFile(tempPath, buffer);
+      const bytes = Buffer.from(await profileFile.arrayBuffer());
+      const tempPath = path.join(os.tmpdir(), profileFile.name);
+      await writeFile(tempPath, bytes);
       const result = await cloudinary.uploader.upload(tempPath, { folder: "teacher_profiles" });
       imageUrl = result.secure_url;
       fs.unlinkSync(tempPath);
@@ -126,6 +105,29 @@ export async function PUT(req: NextRequest) {
       imageUrl = "";
     }
 
+    // Handle Resume
+    let resumeUrl = teacher.resume;
+    if (resumeFile && resumeFile.name) {
+      if (resumeUrl) {
+        const publicId = getCloudinaryPublicId(resumeUrl);
+        if (publicId) await cloudinary.uploader.destroy(`teacher_resumes/${publicId}`);
+      }
+      const bytes = Buffer.from(await resumeFile.arrayBuffer());
+      const tempPath = path.join(os.tmpdir(), resumeFile.name);
+      await writeFile(tempPath, bytes);
+      const result = await cloudinary.uploader.upload(tempPath, {
+        folder: "teacher_resumes",
+        resource_type: "raw",
+      });
+      resumeUrl = result.secure_url;
+      fs.unlinkSync(tempPath);
+    } else if (removeResume && resumeUrl) {
+      const publicId = getCloudinaryPublicId(resumeUrl);
+      if (publicId) await cloudinary.uploader.destroy(`teacher_resumes/${publicId}`);
+      resumeUrl = "";
+    }
+
+    // Handle Password
     const password = rest.password?.toString();
     if (password) {
       rest.password = await bcrypt.hash(password, 10);
@@ -133,34 +135,11 @@ export async function PUT(req: NextRequest) {
       delete rest.password;
     }
 
-    const classNames = rawAssignments.map((a: any) => a.classes);
-    const subjectNames = rawAssignments.map((a: any) => a.subjects);
-
-    const classDocs = await ClassModel.find({ name: { $in: classNames } });
-    const subjectDocs = await SubjectModel.find({ name: { $in: subjectNames } });
-
-    const assignments = rawAssignments.flatMap((a: any) => {
-      return a.slots.map((s: any) => ({
-        classes: a.classes,
-        subjects: a.subjects,
-        slots: [convertToUtcSlot(s, s.date, timezone)],
-      }));
-    });
-
     const updated = await Teacher.findByIdAndUpdate(
       id,
-      {
-        ...rest,
-        profileImage: imageUrl,
-        assignments,
-        classes: classDocs.map((c) => c._id),
-        subjects: subjectDocs.map((s) => s._id),
-      },
+      { ...rest, profileImage: imageUrl, resume: resumeUrl },
       { new: true }
-    )
-      .select("-password")
-      .populate("classes", "name")
-      .populate("subjects", "name");
+    ).select("-password");
 
     return NextResponse.json({ msg: "Teacher updated", teacher: updated }, { status: 200 });
   } catch (err) {
@@ -173,9 +152,7 @@ export async function GET() {
   try {
     await connectMongoDB();
     const teachers = await Teacher.find()
-      .select("-password")
-      .populate("classes", "name")
-      .populate("subjects", "name");
+      .select("-password");
     return NextResponse.json({ teachers }, { status: 200 });
   } catch (err) {
     console.error("Get Teachers Error:", err);

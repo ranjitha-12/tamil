@@ -70,10 +70,10 @@ export default function Login() {
 
             <div className="font-bold text-neutral-800 flex flex-col space-y-2">
               <Link href="/login">
-                <h3 className="text-black font-bold text-[28px]">LOGIN</h3>
+                <h3 className="text-black font-bold text-3xl">LOGIN</h3>
               </Link>
-              <p className="text-sm text-neutral-800">
-                Tamil School Login
+              <p className="text-md text-neutral-400">
+                Universal Tamil Academy Login
               </p>
             </div>
 
@@ -82,9 +82,9 @@ export default function Login() {
                 <input
                   type="email"
                   name="email"
-                  placeholder="abc@gmail.com"
+                  placeholder="User Name (abc@gmail.com)"
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:ring-0 focus:border-gray-400 focus:bg-gray-50 sm:text-sm"
+                  className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:ring-0 focus:border-gray-400 focus:bg-gray-50 text-md"
                   required
                 />
               </div>
@@ -92,21 +92,21 @@ export default function Login() {
                 <input
                   type="password"
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:ring-0 focus:border-gray-400 focus:bg-gray-50 sm:text-sm"
+                  className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:ring-0 focus:border-gray-400 focus:bg-gray-50 text-md"
                   required
                 />
               </div>
             </div>
 
             <div className="w-full">
-              <button className="w-full py-3 font-semibold text-white bg-[#f55418] hover:bg-transparent border border-[#f55418] rounded-md hover:text-[#f55418] transition">
+              <button className="w-full py-3 font-semibold text-md text-white bg-amber-700 hover:bg-transparent border border-amber-700 rounded-md hover:text-amber-700 transition">
                 Login
               </button>
             </div>
 
-            <div className="text-center text-sm font-medium text-neutral-800">
+            <div className="text-center text-md font-medium text-neutral-800">
               <p>
                 Create New Account?{" "}
                 <Link href="/register">
@@ -114,7 +114,7 @@ export default function Login() {
                 </Link>
               </p>
             </div>
-            <div className="text-center text-sm font-medium text-neutral-800">
+            <div className="text-center text-md font-medium text-neutral-800">
               <Link href="/forgotPassword" className="text-[#1565C0] hover:underline">
                 Forgot Password?
               </Link>

@@ -8,16 +8,18 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import os from "os";
 import fs from "fs";
+
 function getCloudinaryPublicId(url: string): string | null {
   const regex = /\/v\d+\/(.+)\.\w+$/;
   const match = url.match(regex);
   return match ? match[1] : null;
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
-    const students = await Student.find().populate("grade", "name").populate("parent");
+    const students = await Student.find() .populate("parent").populate("grade", "name").populate("teacher", "name surname");
+    
     return NextResponse.json(students);
   } catch (err) {
     console.error(err);
@@ -33,10 +35,10 @@ export async function POST(req: NextRequest) {
     const name = formData.get("name");
     const surname = formData.get("surname");
     const email = formData.get("email");
-    const age = Number(formData.get("age"));
     const grade = formData.get("grade");
     const sex = formData.get("sex");
     const birthday = formData.get("birthday");
+    const tamilGrade = formData.get("tamilGrade");
     const file: File | null = formData.get("profileImage") as File;
     if (!parent) {
       return NextResponse.json({ error: "Parent ID is required" }, { status: 400 });
@@ -58,15 +60,8 @@ export async function POST(req: NextRequest) {
       fs.unlinkSync(tempPath);
     }
     const newStudent = await Student.create({
-      name,
-      surname,
-      email,
-      age,
-      grade,
-      sex,
-      birthday,
-      parent,
-      profileImage: imageUrl,
+      name, surname, email, grade, sex, birthday, parent,
+      profileImage: imageUrl, ...(tamilGrade ? { tamilGrade } : {}),
     });
     await Parent.findByIdAndUpdate(parent, {
       $addToSet: { students: newStudent._id },
@@ -89,11 +84,11 @@ export async function PUT(req: NextRequest) {
     const name = formData.get("name");
     const surname = formData.get("surname");
     const email = formData.get("email");
-    const age = Number(formData.get("age"));
     const grade = formData.get("grade");
     const sex = formData.get("sex");
     const birthday = formData.get("birthday");
     const parent = formData.get("parent");
+    const tamilGrade = formData.get("tamilGrade");
     const file: File | null = formData.get("profileImage") as File;
     const existingStudent = await Student.findById(id);
     if (!existingStudent) {
@@ -126,17 +121,12 @@ export async function PUT(req: NextRequest) {
         imageUrl = "";
       }
     }
-    const updatedStudent = await Student.findByIdAndUpdate(id, {
-      name,
-      surname,
-      email,
-      age,
-      grade,
-      sex,
-      birthday,
-      parent,
-      profileImage: imageUrl,
-    }, { new: true });
+    const updateData: any = { name, surname, email, grade, sex, birthday, parent, profileImage: imageUrl,};
+    if (tamilGrade) {
+      updateData.tamilGrade = tamilGrade;
+    }
+    const updatedStudent = await Student.findByIdAndUpdate(id, updateData, { new: true });
+    
     const oldParentId = existingStudent.parent?.toString();
     if (oldParentId !== parent) {
       if (oldParentId) {

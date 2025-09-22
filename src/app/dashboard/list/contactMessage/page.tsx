@@ -48,7 +48,7 @@ const ContactMessagePage = () => {
     return (
       <tr
         key={msg._id}
-        className="text-left text-gray-700 text-sm even:bg-slate-50 hover:bg-purple-100"
+        className="text-left text-gray-700 text-md even:bg-slate-50 hover:bg-purple-100"
       >
         <td className="py-3">{msg.name}</td>
         <td className="py-3 hidden md:table-cell">{msg.email}</td>
@@ -61,7 +61,7 @@ const ContactMessagePage = () => {
   return (
     <div className="bg-white rounded-md flex-1 m-4 mt-0 p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-lg font-semibold">Contact Messages</h1>
+        <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Contact Messages</h1>
       </div>
 
       {messages.length > 0 ? (

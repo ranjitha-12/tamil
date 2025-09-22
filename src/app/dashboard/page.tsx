@@ -19,8 +19,7 @@ interface Teacher {
   name: string;
   phone: string;
   address: string;
-  subjects: { name: string }[];
-  classes: { name: string }[];
+  email: string;
 }
 
 const AdminDashboard = () => {
@@ -92,8 +91,7 @@ const AdminDashboard = () => {
       className="text-left text-gray-500 text-sm even:bg-slate-50 hover:bg-purple-100 mr-2"
     >
       <td className="py-3">{teacher.name}</td>
-      <td className="py-3 hidden md:table-cell">{teacher.subjects.map(s => s.name).join(", ")}</td>
-      <td className="py-3 hidden md:table-cell">{teacher.classes.map(c => c.name).join(", ")}</td>
+      <td className="py-3 hidden md:table-cell">{teacher.email}</td>
       <td className="py-3">{teacher.phone}</td>
       <td className="py-3 hidden lg:table-cell">{teacher.address}</td>
     </tr>
@@ -101,8 +99,7 @@ const AdminDashboard = () => {
 
   const columns = [
     { header: "Info", accessor: "info" },
-    { header: "Subjects", accessor: "subjects", className: "hidden md:table-cell" },
-    { header: "Classes", accessor: "classes", className: "hidden md:table-cell" },
+    { header: "E-mail ID", accessor: "email", className: "hidden md:table-cell" },
     { header: "Phone", accessor: "phone" },
     { header: "Address", accessor: "address", className: "hidden lg:table-cell" },
   ];

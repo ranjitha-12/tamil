@@ -21,14 +21,14 @@ export async function sendEmail(
       });
 
       const mailOptions = {
-         from: `"Tamil Online Website" <${SMTP_USER}>`,
+         from: `"Universal Tamil Academy" <${SMTP_USER}>`,
          to: recipientEmail,
          subject: 'Password Reset Request',
          html: `
-            <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-               <h2 style="color: #333;">Password Reset Request</h2>
-               <p>Hello,</p>
-               <p>
+            <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #000000;">
+               <h2 style="color: #000000;">Password Reset Request</h2>
+               <p style="color: #000000;">Hello,</p>
+               <p style="color: #000000;">
                   We received a request to reset your password. Please click the link
                   below to reset your password:
                </p>
@@ -36,8 +36,8 @@ export async function sendEmail(
                   style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007BFF; text-decoration: none; border-radius: 5px;">
                   Reset Password
                </a>
-               <p>If you didn’t request this, you can safely ignore this email.</p>
-               <p>Thanks, <br />Tamil Online Website</p>
+               <p style="color: #000000;">If you didn’t request this, you can safely ignore this email.</p>
+               <p>Thanks, <br />Universal Tamil Academy</p>
             </div>
          `,
       };

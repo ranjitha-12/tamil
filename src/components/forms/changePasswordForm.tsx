@@ -68,9 +68,9 @@ export default function ChangePasswordForm() {
       {/* Right Form Section */}
       <div className="w-full md:w-[30%] flex items-center justify-center px-8 py-12 bg-white">
         <form onSubmit={handleSubmit} className="w-full space-y-6 max-w-md">
-          <div className="flex flex-col space-y-2">    
-              <h3 className="text-black font-bold text-[28px]">RESET PASSWORD</h3>
-            <p className="text-sm text-neutral-800">Enter your new password below</p>
+          <div className="font-bold text-neutral-800 flex flex-col space-y-2">    
+              <h3 className="text-black font-bold text-3xl">RESET PASSWORD</h3>
+            <p className="text-md text-neutral-400">Enter your new password below</p>
           </div>
 
           <div className="flex flex-col space-y-2">
@@ -83,20 +83,20 @@ export default function ChangePasswordForm() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:bg-gray-50 sm:text-sm"
+              className="block w-full px-3 py-3 mt-1 border rounded-lg border-gray-400 focus:outline-none focus:bg-gray-50 text-md"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 text-white bg-[#f55418] hover:bg-transparent border border-[#f55418] rounded-md hover:text-[#f55418] transition"
+            className="w-full py-3 text-white font-semibold text-md bg-[#f55418] hover:bg-transparent border border-[#f55418] rounded-md hover:text-[#f55418] transition"
             disabled={loading}
           >
             {loading ? 'Updating...' : 'Update Password'}
           </button>
 
-          <div className="text-sm text-neutral-800 text-center">
+          <div className="text-center text-md font-medium text-neutral-800">
             <Link href="/login" className="text-[#1565C0] hover:underline">
               Back to Login
             </Link>
