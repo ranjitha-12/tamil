@@ -4,9 +4,7 @@ import Table from '@/components/Table';
 import Pagination from '@/components/pagination';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-
 export interface Parent {
-  country: string;
   _id: string;
   username: string;
   email: string;
@@ -16,8 +14,8 @@ export interface Parent {
   fatherFirstName: string;
   fatherLastName: string;
   studentName?: string;
+  country: string;
 }
-
 const ParentListPage = () => {
   const [parents, setParents] = useState<Parent[]>([]);
   const { data: session } = useSession();
@@ -30,14 +28,11 @@ const ParentListPage = () => {
     { header: 'Email', accessor: 'email', className: 'hidden md:table-cell' },
     { header: 'Whatsapp No', accessor: 'whatsapp' },
     { header: 'Student Name', accessor: 'studentName', className: 'hidden md:table-cell' },
-    ...(userRole === 'Admin'
-      ? [{ header: 'Actions', accessor: 'action' }]
-      : []),
+    ...(userRole === 'Admin' ? [{ header: 'Actions', accessor: 'action' }] : []),
   ];
   
    useEffect(() => {
     if (!userRole) return;
-  
     if (userRole === 'Admin' ) {
       fetchParents();
     } else if (userRole === 'Teacher' && id) {
@@ -67,7 +62,6 @@ const ParentListPage = () => {
         .filter((s: any) => parent.students.includes(s._id))
         .map((s: any) => s.name)
         .join(', ');
-
       return {
         _id: parent._id,
         username: parent.username,
@@ -151,7 +145,7 @@ const ParentListPage = () => {
             <h1 className="text-xl sm:text-md md:text-lg lg:text-xl 2xl:text-xl font-semibold">Parent List</h1>
         </div>
       <div>
-            <Table columns={columns} renderRow={renderRow} data={paginatedParents} />
+          <Table columns={columns} renderRow={renderRow} data={paginatedParents} />
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
     </div>

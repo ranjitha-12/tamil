@@ -136,7 +136,7 @@ export default function InvoiceBillPage() {
     { header: "Student Name", accessor: "name", className: "py-2 px-3" },
     { header: "Plan", accessor: "plan", className: "py-2 px-3" },
     { header: "Session Type", accessor: "sessionType", className: "py-2 px-3 hidden md:table-cell" },
-    // { header: "Tamil Grade", accessor: "tamilGrade", className: "py-2 px-3 hidden md:table-cell" },
+    { header: "Billing Cycle", accessor: "billingCycle", className: "py-2 px-3 hidden md:table-cell" },
     { header: "Existing Plan EndDate", accessor: "planEndDate", className: "py-2 px-3 hidden md:table-cell" },
     { header: "Amount", accessor: "amount", className: "py-2 px-3" },
     { header: "Actions", accessor: "actions", className: "py-2 px-3" },
@@ -160,14 +160,14 @@ export default function InvoiceBillPage() {
           {student.name} {student.surname}
         </td>
         <td className="py-3 px-3">
-          {student.selectedPlan} ({student.billingCycle})
+          {student.selectedPlan}
         </td>
         <td className="py-3 px-3 hidden md:table-cell">
           {student.sessionType}
         </td>
-        {/* <td className="py-3 px-3 hidden md:table-cell">
-          {student.tamilGrade || "Not Assigned"}
-        </td> */}
+        <td className="py-3 px-3 hidden md:table-cell">
+          {student.billingCycle}
+        </td> 
         <td className="py-3 px-3 hidden md:table-cell">
           {formatDate(student.planEndDate)}
         </td>
